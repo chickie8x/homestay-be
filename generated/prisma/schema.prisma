@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum State {
+  COMPLETED
+  IN_PROGRESS
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  capacity    Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  amenities   String[]
+  images      String[]
+  timeRanges  TimeRange[]
+  bookings    Booking[]
+}
+
+model TimeRange {
+  id        String    @id @default(cuid())
+  start     String
+  end       String
+  price     Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  overnight Boolean   @default(false)
+  roomId    String
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+}
+
+model Booking {
+  id             String      @id @default(cuid())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  state          State       @default(IN_PROGRESS)
+  bookingDate    DateTime
+  checkin        String
+  checkout       String
+  timeRange      TimeRange[]
+  roomId         String
+  room           Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  totalCost      Int
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  cccdFront      String
+  cccdBack       String
+  numberOfPeople Int
+}
