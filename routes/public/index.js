@@ -8,6 +8,10 @@ router.use(express.urlencoded({ extended: true }));
 
 const payos = new Payos(process.env.PAYMENT_CLIENT_ID, process.env.PAYMENT_API_KEY, process.env.PAYMENT_CHECKSUM_KEY);
 
+router.get("/ping", async (req, res) => {
+    res.status(200).json({ message: "Pong" });
+});
+
 router.get("/rooms", async (req, res) => {
     try {
         const rooms = await prisma.room.findMany({
@@ -36,6 +40,8 @@ router.get("/rooms", async (req, res) => {
 });
 
 router.get("/bookings", async (req, res) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0)
     try {
         const bookings = await prisma.booking.findMany({
             select: {
@@ -46,9 +52,29 @@ router.get("/bookings", async (req, res) => {
                         id: true,
                     }
                 }
+            },
+            where:{
+                bookingDate: {
+                    gte: today,
+                }
             }
         })
         res.status(200).json({ message: "Booking fetched successfully", bookings });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Đã có lỗi xảy ra" });
+    }
+});
+
+router.get("/bookings/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await prisma.booking.findUnique({
+            where: {
+                id,
+            },
+        });
+        res.status(200).json({ message: "Booking fetched successfully", booking });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Đã có lỗi xảy ra" });

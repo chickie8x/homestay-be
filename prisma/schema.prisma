@@ -17,6 +17,7 @@ datasource db {
 enum State {
   COMPLETED
   IN_PROGRESS
+  CANCELLED
 }
 
 model User {
