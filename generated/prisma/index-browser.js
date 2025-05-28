@@ -166,6 +166,16 @@ exports.Prisma.BookingScalarFieldEnum = {
   numberOfPeople: 'numberOfPeople'
 };
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  state: 'state',
+  bookingId: 'bookingId',
+  amount: 'amount',
+  orderCode: 'orderCode'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -182,14 +192,17 @@ exports.Prisma.NullsOrder = {
 };
 exports.State = exports.$Enums.State = {
   COMPLETED: 'COMPLETED',
-  IN_PROGRESS: 'IN_PROGRESS'
+  PENDING: 'PENDING',
+  CANCELLED: 'CANCELLED',
+  PAID: 'PAID'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
   Room: 'Room',
   TimeRange: 'TimeRange',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  Order: 'Order'
 };
 
 /**

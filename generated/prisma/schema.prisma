@@ -16,7 +16,9 @@ datasource db {
 
 enum State {
   COMPLETED
-  IN_PROGRESS
+  PENDING
+  CANCELLED
+  PAID
 }
 
 model User {
@@ -58,7 +60,7 @@ model Booking {
   id             String      @id @default(cuid())
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  state          State       @default(IN_PROGRESS)
+  state          State       @default(PENDING)
   bookingDate    DateTime
   checkin        String
   checkout       String
@@ -72,4 +74,18 @@ model Booking {
   cccdFront      String
   cccdBack       String
   numberOfPeople Int
+  order          Order?      @relation
+
+  @@index([roomId, bookingDate, state, customerPhone, customerEmail])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  state     State    @default(PENDING)
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount    Int
+  orderCode String
 }
