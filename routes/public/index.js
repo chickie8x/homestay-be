@@ -270,13 +270,13 @@ router.post("/bookings/cancel", async (req, res) => {
       }
 
       // Update booking and order in a single transaction
-      const [updatedBooking] = await prisma.$transaction([
+      const [updatedBooking, updatedOrder] = await prisma.$transaction([
           prisma.booking.update({
               where: { id: bookingId },
               data: { state: State.CANCELLED },
           }),
           prisma.order.update({
-              where: { bookingId },
+              where: { bookingId: bookingId },
               data: { state: State.CANCELLED },
           }),
       ]);
@@ -296,8 +296,13 @@ router.post('/payment/webhook', async (req, res) => {
     try {
       const webhookData = payos.verifyPaymentWebhookData(req.body);
       console.log(webhookData);
+      if(webhookData.orderCode === 123 && webhookData.amount === 3000) {
+        console.log('Webhook success');
+        res.status(200).json({ status: "success" });
+        return;
+      }
       let webhookState;
-      if(webhookData.status === 'PAID') {
+      if(webhookData.code === '00') {
         webhookState = State.PAID;
       }
       else {
@@ -305,11 +310,11 @@ router.post('/payment/webhook', async (req, res) => {
       }
       await prisma.$transaction(async (tx) => {
         await tx.order.update({
-          where: { bookingId: webhookData.bookingId },
+          where: { orderCode: webhookData.orderCode },
           data: { state: webhookState },
         });
         await tx.booking.update({
-          where: { id: webhookData.bookingId },
+          where: { id: order.bookingId },
           data: { state: webhookState },
         });
       });
