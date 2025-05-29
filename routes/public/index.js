@@ -60,9 +60,9 @@ router.get("/bookings", async (req, res) => {
                 }
             },
             where:{
-                bookingDate: {
+                /* bookingDate: {
                     gte: today,
-                },
+                }, */
                 state: {
                     in: [State.PAID, State.PENDING]
                 }
