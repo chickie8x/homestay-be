@@ -310,7 +310,7 @@ router.post('/payment/webhook', async (req, res) => {
       }
       await prisma.$transaction(async (tx) => {
         await tx.order.update({
-          where: { orderCode: webhookData.orderCode },
+          where: { orderCode: String(webhookData.orderCode) },
           data: { state: webhookState },
         });
         await tx.booking.update({
