@@ -87,5 +87,7 @@ model Order {
   bookingId String   @unique
   booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   amount    Int
-  orderCode String
+  orderCode String   @unique
+
+  @@index([bookingId, state, orderCode])
 }

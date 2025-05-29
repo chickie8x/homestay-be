@@ -7627,6 +7627,7 @@ export namespace Prisma {
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     bookingId?: string
+    orderCode?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
@@ -7634,9 +7635,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     state?: EnumStateFilter<"Order"> | $Enums.State
     amount?: IntFilter<"Order"> | number
-    orderCode?: StringFilter<"Order"> | string
     booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
-  }, "id" | "bookingId">
+  }, "id" | "bookingId" | "orderCode">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
