@@ -2,6 +2,7 @@ import express from "express";
 import {prisma, State} from "../../config/index.cjs";
 import Payos from "@payos/node";
 import { generateLockKeys, generateOrderCode } from "../../utils/index.js";
+import moment from "moment-timezone";
 
 const router = express.Router();
 router.use(express.json());
@@ -44,8 +45,7 @@ router.get("/rooms", async (req, res) => {
 });
 
 router.get("/bookings", async (req, res) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0)
+    const today = moment.tz('Asia/Bangkok').startOf('day').toDate();
     console.log(today);
     try {
         const bookings = await prisma.booking.findMany({
@@ -60,9 +60,9 @@ router.get("/bookings", async (req, res) => {
                 }
             },
             where:{
-                /* bookingDate: {
+                bookingDate: {
                     gte: today,
-                }, */
+                },
                 state: {
                     in: [State.PAID, State.PENDING]
                 }
