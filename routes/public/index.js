@@ -46,6 +46,7 @@ router.get("/rooms", async (req, res) => {
 router.get("/bookings", async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0)
+    console.log(today);
     try {
         const bookings = await prisma.booking.findMany({
             select: {
