@@ -11,7 +11,7 @@ router.use(express.urlencoded({ extended: true }));
 const payos = new Payos(process.env.PAYMENT_CLIENT_ID, process.env.PAYMENT_API_KEY, process.env.PAYMENT_CHECKSUM_KEY);
 
 router.get("/ping", async (req, res) => {
-    console.log(req.params.timestamp? req.params.timestamp : "No timestamp");
+    console.log(req.params);
 
     res.status(200).json({ message: "Pong" });
 });
