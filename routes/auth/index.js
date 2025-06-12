@@ -9,6 +9,9 @@ router.use(express.urlencoded({ extended: true }));
 
 //register user
 router.post("/register", async (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).json({ message: "Email or password is required" });
+  }
   const { email, name, password } = req.body;
 
   //check if user already exists
@@ -42,11 +45,15 @@ router.post("/register", async (req, res) => {
 
 //login user
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).json({ message: "Email or password is required" });
+  }
+  try {
+    const { email, password } = req.body;
 
-  //check if user exists
-  const user = await prisma.user.findUnique({
-    where: {
+    //check if user exists
+    const user = await prisma.user.findUnique({
+      where: {
       email,
     },
   });
@@ -65,6 +72,10 @@ router.post("/login", async (req, res) => {
   });
 
   res.status(200).json({ message: "Đăng nhập thành công", token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Đã có lỗi xảy ra" });
+  }
 });
 
 export default router;
