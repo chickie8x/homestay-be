@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../../middleware/auth.js";
-import prisma from "../../config/index.cjs";
+import {prisma} from "../../config/index.cjs";
 
 const router = express.Router();
 router.use(express.json());
