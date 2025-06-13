@@ -187,7 +187,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\coding\\homestay-be\\generated\\prisma",
+      "value": "/home/chickie8x/coding/homestay-be/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -196,12 +196,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\coding\\homestay-be\\prisma\\schema.prisma",
+    "sourceFilePath": "/home/chickie8x/coding/homestay-be/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -215,17 +215,18 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiZWYxMjc3ZGYtNTI2ZC00MGQ1LWExMmUtMTFiNGNiMzE1Zjk1IiwidGVuYW50X2lkIjoiN2UxYWMxMDc1Nzc4NTVmMTEyZDczYWVjNThmOGRkMGVhZjkzZDU1YmU1NGQ4ZDdkZGIyNDljZTU0OTJkNmZhZCIsImludGVybmFsX3NlY3JldCI6ImRiODBiMTQ5LTEzZGItNGU0YS1iZmYwLTRiZDQyZmE3OGMxZCJ9.DVr74Et-KG_YAz24UjAUJ5HdQ-0_b8aLufpNtbpOYpE"
+        "value": null
       }
     }
   },
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum State {\n  COMPLETED\n  PENDING\n  CANCELLED\n  PAID\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  email     String   @unique\n  name      String\n  password  String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Room {\n  id          String      @id @default(cuid())\n  name        String\n  description String?\n  capacity    Int\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n  amenities   String[]\n  images      String[]\n  timeRanges  TimeRange[]\n  bookings    Booking[]\n}\n\nmodel TimeRange {\n  id        String    @id @default(cuid())\n  start     String\n  end       String\n  price     Int\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  overnight Boolean   @default(false)\n  roomId    String\n  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)\n  bookings  Booking[]\n}\n\nmodel Booking {\n  id             String      @id @default(cuid())\n  createdAt      DateTime    @default(now())\n  updatedAt      DateTime    @updatedAt\n  state          State       @default(PENDING)\n  bookingDate    DateTime\n  checkin        String\n  checkout       String\n  timeRange      TimeRange[]\n  roomId         String\n  room           Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)\n  totalCost      Int\n  customerName   String\n  customerEmail  String\n  customerPhone  String\n  cccdFront      String\n  cccdBack       String\n  numberOfPeople Int\n  order          Order?      @relation\n\n  @@index([roomId, bookingDate, state, customerPhone, customerEmail])\n}\n\nmodel Order {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  state     State    @default(PENDING)\n  bookingId String   @unique\n  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)\n  amount    Int\n  orderCode String   @unique\n\n  @@index([bookingId, state, orderCode])\n}\n",
   "inlineSchemaHash": "5324663f432a8aeb37fc4296adbc2ce45cc47e9fef9068327310ce7536860669",
-  "copyEngine": false
+  "copyEngine": true
 }
 config.dirname = '/'
 
