@@ -1,7 +1,7 @@
 import express from "express";
 import {prisma, State} from "../../config/index.cjs";
 import Payos from "@payos/node";
-import { generateLockKeys, generateOrderCode } from "../../utils/index.js";
+import { generateLockKeys, generateOrderCode, verifyTurnstileToken } from "../../utils/index.js";
 import moment from "moment-timezone";
 
 const router = express.Router();
@@ -123,7 +123,17 @@ router.post('/bookings/create', async (req, res) => {
         cccdFront,
         cccdBack,
         numberOfPeople,
+        turnstileToken,
       } = req.body;
+
+      if (!turnstileToken) {
+        return res.status(400).json({ message: "Turnstile token is required" });
+      }
+
+      const verifyResponse = await verifyTurnstileToken(turnstileToken);
+      if (!verifyResponse) {
+        return res.status(400).json({ message: "Turnstile token is invalid" });
+      }
   
       const timeRangeIds = JSON.parse(timeRange).map((timeRange) => ({
         id: timeRange.id,
@@ -230,8 +240,8 @@ router.post("/payment/create-payment-link", async (req, res) => {
             amount,
             description: 'Đặt phòng',
             orderCode,
-            returnUrl: `http://localhost:5173/payment/success?bookingId=${bookingId}`,
-            cancelUrl: `http://localhost:5173/payment/cancel?bookingId=${bookingId}`,
+            returnUrl: `https://homestay-fe.onrender.com/payment/success?bookingId=${bookingId}`,
+            cancelUrl: `https://homestay-fe.onrender.com/payment/cancel?bookingId=${bookingId}`,
           });
           console.log(paymentLink);
           return { paymentLink };
